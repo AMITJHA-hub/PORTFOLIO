@@ -1,0 +1,859 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Amit Kumar Jha - Full-Stack Developer</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background-color: #111827; /* Dark background */
+            color: #e2e8f0;
+            overflow-x: hidden; /* Prevent horizontal scroll on animations */
+            position: relative; /* For z-index context of global animations */
+        }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .section {
+            background-color: #1f2937;
+            padding: 3rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2.5rem;
+            transition: transform 0.3s ease-in-out, opacity 0.7s ease-in-out, transform 0.7s ease-in-out;
+            position: relative;
+            z-index: 10;
+            overflow: hidden; /* Crucial for section-specific blob animation */
+        }
+        .section:hover {
+            transform: translateY(-5px);
+        }
+        
+        /* --- Hero Section Specific Styles --- */
+        #hero {
+            position: relative;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding-top: 80px;
+            overflow: hidden;
+        }
+        #hero .container {
+            position: relative;
+            z-index: 20;
+        }
+        #hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+        #hero p {
+            font-size: 1.5rem;
+            font-weight: 300;
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+        
+        /* --- Typewriter Effect --- */
+        .typewriter-text {
+            border-right: 3px solid #818cf8;
+            animation: blink-caret .75s step-end infinite;
+            display: inline-block;
+            padding-right: 5px;
+        }
+        @keyframes blink-caret {
+            from, to { border-color: transparent }
+            50% { border-color: #818cf8; }
+        }
+
+        /* --- Project Tag --- */
+        .project-tag {
+            background-color: #374151;
+            color: #d1d5db;
+            font-size: 0.75rem;
+            padding: 0.25rem 0.75rem;
+            border-radius: 9999px;
+            font-weight: 500;
+        }
+        
+        /* --- Project Card --- */
+        .project-card {
+            background-color: #374151;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: opacity 0.6s ease-in-out, transform 0.6s ease-in-out;
+            position: absolute; /* Needed for stacking */
+            top: 0;
+            left: 0;
+            width: 100%;
+        }
+
+        /* --- 3D Flip Animation (on hover) --- */
+        .flip-container {
+            position: relative;
+            width: 192px; height: 192px;
+            margin: 0 auto 1.5rem;
+            perspective: 1000px;
+            border-radius: 9999px;
+            border: 6px solid #6366f1;
+            box-shadow: 0 0 25px rgba(99, 102, 241, 0.5);
+        }
+        .flipper {
+            position: relative;
+            width: 100%; height: 100%;
+            transition: transform 0.8s;
+            transform-style: preserve-3d;
+            border-radius: 9999px;
+            box-shadow: 0 10px 15px -3px rgba(0,0,0,0.2);
+        }
+        .flip-container:hover .flipper {
+            transform: rotateY(180deg);
+        }
+        .front-image, .back-image {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            object-fit: cover;
+            border-radius: 9999px;
+            backface-visibility: hidden;
+        }
+        .back-image {
+            transform: rotateY(180deg);
+        }
+
+        /* --- Digital Flow Background Animation (Hero) --- */
+        #digital-flow-background {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: 1;
+            background: radial-gradient(circle at center, rgba(31, 41, 55, 0.8) 0%, rgba(17, 24, 39, 0.9) 70%, rgba(17, 24, 39, 1) 100%);
+            opacity: 0.7;
+        }
+
+        .code-line {
+            position: absolute;
+            background-color: rgba(99, 102, 241, 0.3);
+            width: 2px;
+            height: var(--line-height); /* Use CSS variable */
+            animation: flowDown var(--duration) linear infinite;
+            bottom: 100%;
+            transform-origin: top;
+            opacity: 0;
+        }
+
+        @keyframes flowDown {
+            0% { transform: translateY(0) scaleY(0.1); opacity: 0; }
+            10% { opacity: 1; transform: translateY(0) scaleY(1); }
+            90% { opacity: 1; transform: translateY(calc(100vh + 100px)) scaleY(1); }
+            100% { transform: translateY(calc(100vh + 100px)) scaleY(0.1); opacity: 0; }
+        }
+
+        /* --- Global Starfield / Digital Dust Animation --- */
+        #starfield-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0; /* Behind everything */
+            pointer-events: none; /* Allows clicks to pass through */
+            opacity: 0.5; /* Subtle */
+        }
+
+        .star {
+            position: absolute;
+            background-color: #cbd5e1; /* Light gray */
+            border-radius: 50%;
+            animation: twinkle var(--duration) ease-in-out infinite alternate,
+                       drift var(--drift-duration) linear infinite;
+            opacity: 0; /* Start hidden */
+            will-change: transform, opacity; /* Performance hint */
+        }
+
+        @keyframes twinkle {
+            0% { opacity: 0; transform: scale(0.5); }
+            50% { opacity: 0.8; transform: scale(1); }
+            100% { opacity: 0; transform: scale(0.5); }
+        }
+
+        @keyframes drift {
+            0% { transform: translate(var(--x-start), var(--y-start)); }
+            100% { transform: translate(var(--x-end), var(--y-end)); }
+        }
+
+        /* --- Section Blob / Nebula Background --- */
+        .section-blob {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(99, 102, 241, 0.2) 0%, rgba(31, 41, 55, 0) 70%);
+            border-radius: 50%;
+            filter: blur(80px); /* Soft glow */
+            transform: translate(-50%, -50%) scale(1);
+            animation: blobMovement 25s ease-in-out infinite alternate;
+            z-index: -1;
+            pointer-events: none;
+            will-change: transform;
+        }
+        #about .section-blob {
+             width: 500px; height: 500px;
+             background: radial-gradient(circle, rgba(129, 140, 248, 0.15) 0%, rgba(31, 41, 55, 0) 70%);
+             animation-delay: -5s;
+        }
+        #projects .section-blob {
+             width: 450px; height: 450px;
+             background: radial-gradient(circle, rgba(167, 139, 250, 0.18) 0%, rgba(31, 41, 55, 0) 70%);
+             animation-delay: -10s;
+        }
+         #skills .section-blob {
+             width: 550px; height: 550px;
+             background: radial-gradient(circle, rgba(99, 102, 241, 0.12) 0%, rgba(31, 41, 55, 0) 70%);
+             animation-delay: -15s;
+        }
+        #contact .section-blob {
+             width: 480px; height: 480px;
+             background: radial-gradient(circle, rgba(167, 139, 250, 0.10) 0%, rgba(31, 41, 55, 0) 70%);
+             animation-delay: -20s;
+        }
+
+        @keyframes blobMovement {
+            0% { transform: translate(-50%, -50%) scale(1); }
+            25% { transform: translate(-55%, -45%) scale(1.05); }
+            50% { transform: translate(-45%, -55%) scale(0.98); }
+            75% { transform: translate(-52%, -48%) scale(1.03); }
+            100% { transform: translate(-50%, -50%) scale(1); }
+        }
+
+        /* --- PROJECT STACK STYLES --- */
+        #project-stack-container {
+            position: relative;
+            transition: height 0.6s ease-in-out, opacity 0.7s ease-in-out;
+        }
+        .project-card.is-active {
+            opacity: 1;
+            transform: translateX(0) scale(1);
+            z-index: 20;
+        }
+        .project-card:not(.is-active) {
+            opacity: 0;
+            transform: translateX(50%) scale(0.8);
+            z-index: 10;
+            pointer-events: none;
+        }
+        
+        /* --- PAGE PEEL EFFECT --- */
+        .page-peel {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 70px;
+            height: 70px;
+            cursor: pointer;
+            z-index: 30;
+        }
+        .page-peel::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(315deg, #4f46e5 25%, #6366f1 50%, transparent 50%);
+            box-shadow: -5px 5px 10px rgba(0,0,0,0.3);
+            transition: all 0.3s ease-in-out;
+        }
+        .page-peel:hover::before {
+            width: 85px;
+            height: 85px;
+        }
+        .page-peel::after {
+            content: '→';
+            position: absolute;
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+            right: 12px;
+            bottom: 12px;
+            transition: all 0.3s ease-in-out;
+            transform: rotate(-45deg);
+        }
+        .page-peel:hover::after {
+            right: 18px;
+            bottom: 18px;
+        }
+        
+        /* --- DOOR ANIMATION STYLES --- */
+        #door-wrapper {
+            position: absolute;
+            inset: 0;
+            z-index: 30;
+            perspective: 1500px;
+            cursor: pointer;
+        }
+        .door {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 50.5%; /* Slight overlap to hide seam */
+            background-color: #2a3444;
+            background-image: linear-gradient(to right, rgba(0,0,0,0.1), transparent, rgba(0,0,0,0.1));
+            box-shadow: 0 0 25px rgba(0,0,0,0.4);
+            transition: transform 1.2s cubic-bezier(0.65, 0, 0.35, 1);
+        }
+        .door-left {
+            left: 0;
+            transform-origin: left;
+            border-right: 2px solid #1a202c;
+        }
+        .door-right {
+            right: 0;
+            transform-origin: right;
+            border-left: 2px solid #1a202c;
+        }
+        .door-handle {
+            position: absolute;
+            top: 50%;
+            width: 10px;
+            height: 40px;
+            background-color: #4f46e5;
+            border-radius: 4px;
+            box-shadow: 0 0 10px rgba(79, 70, 229, 0.8);
+        }
+        .door-left .door-handle { right: 15px; }
+        .door-right .door-handle { left: 15px; }
+
+        #door-wrapper.is-opening .door-left {
+            transform: rotateY(-110deg);
+        }
+        #door-wrapper.is-opening .door-right {
+            transform: rotateY(110deg);
+        }
+        
+        /* --- 3D SKILL CARD STYLES --- */
+        .skills-grid {
+            perspective: 1500px;
+        }
+        .skill-category {
+            background-color: #2a3444;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+        }
+        .skills-grid > .skill-category:first-child {
+            transform: rotateY(-15deg);
+        }
+        .skills-grid > .skill-category:last-child {
+            transform: rotateY(15deg);
+        }
+        .skills-grid:hover > .skill-category {
+            transform: rotateY(0deg);
+        }
+
+        .skill-icon {
+            width: 40px;
+            height: 40px;
+            object-fit: contain;
+            filter: grayscale(1) brightness(1.5);
+            transition: filter 0.3s ease;
+        }
+        .skill-bar:hover .skill-icon {
+            filter: grayscale(0) brightness(1);
+        }
+        .skill-progress-wrapper {
+            width: 100%;
+        }
+        .skill-name {
+            display: block;
+            font-weight: 600;
+            color: #d1d5db;
+            margin-bottom: 0.5rem;
+        }
+        .progress-bar-bg {
+            width: 100%;
+            height: 12px;
+            background-color: #374151;
+            border-radius: 9999px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.4);
+        }
+        .progress-bar-inner {
+            height: 100%;
+            width: 0;
+            background: linear-gradient(90deg, #4f46e5, #818cf8);
+            border-radius: 9999px;
+            transition: width 1.5s cubic-bezier(0.25, 1, 0.5, 1);
+            position: relative;
+        }
+        .progress-bar-inner::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 50%;
+            background: linear-gradient(to bottom, rgba(255,255,255,0.3), transparent);
+            border-radius: 9999px;
+        }
+        .skill-category h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #c7d2fe;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4f46e5;
+        }
+         .skill-category h4 {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #a5b4fc;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        #skills.is-visible .progress-bar-inner.html { width: 85%; transition-delay: 0.1s; }
+        #skills.is-visible .progress-bar-inner.css { width: 70%; transition-delay: 0.2s; }
+        #skills.is-visible .progress-bar-inner.javascript { width: 60%; transition-delay: 0.3s; }
+        #skills.is-visible .progress-bar-inner.react { width: 40%; transition-delay: 0.4s; }
+        #skills.is-visible .progress-bar-inner.tailwind { width: 40%; transition-delay: 0.5s; }
+        #skills.is-visible .progress-bar-inner.node { width: 40%; transition-delay: 0.6s; }
+        #skills.is-visible .progress-bar-inner.python { width: 70%; transition-delay: 0.1s; }
+        #skills.is-visible .progress-bar-inner.cpp { width: 95%; transition-delay: 0.2s; }
+        #skills.is-visible .progress-bar-inner.java { width: 70%; transition-delay: 0.3s; }
+        #skills.is-visible .progress-bar-inner.c { width: 75%; transition-delay: 0.4s; }
+        
+        .writing-cursor::after {
+            content: '|';
+            font-weight: 200;
+            display: inline-block;
+            animation: blink-caret .75s step-end infinite;
+            margin-left: 2px;
+            color: #a5b4fc;
+        }
+    </style>
+</head>
+<body class="bg-gray-900">
+
+    <div id="starfield-background"></div> 
+    <header class="bg-gray-900/70 text-white py-4 shadow-lg fixed top-0 w-full z-50 backdrop-blur-sm">
+        <div class="container flex flex-col md:flex-row justify-between items-center">
+            <h1 class="text-3xl font-bold tracking-wide text-indigo-400">Amit Kumar Jha</h1>
+            <nav class="mt-4 md:mt-0">
+                <ul class="flex space-x-6 text-lg">
+                    <li><a href="#hero" class="hover:text-indigo-300 transition-colors duration-300">Home</a></li>
+                    <li><a href="#about" class="hover:text-indigo-300 transition-colors duration-300">About</a></li>
+                    <li><a href="#projects" class="hover:text-indigo-300 transition-colors duration-300">Projects</a></li>
+                    <li><a href="#skills" class="hover:text-indigo-300 transition-colors duration-300">Skills</a></li>
+                    <li><a href="#contact" class="hover:text-indigo-300 transition-colors duration-300">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section id="hero">
+            <div id="digital-flow-background"></div>
+
+            <div class="container">
+                <div class="flip-container">
+                    <div class="flipper">
+                        <img class="front-image" src="imag/pondi.jpg" alt="Amit Jha Casual">
+                        <img class="back-image" src="https://placehold.co/192x192/111827/FFFFFF?text=Amit" alt="Amit Jha Professional">
+                    </div>
+                </div>
+
+                <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-white">
+                    Code that Works, Design that Inspires.
+                </h1>
+                
+               <div class="text-xl md:text-2xl font-light mb-8 text-gray-300 flex justify-center items-center">
+                    <span>I am a&nbsp;</span> 
+                    <span class="typewriter-text font-semibold text-indigo-400"></span>
+                </div>
+
+                <a href="#projects" class="bg-indigo-600 text-white px-8 py-3 rounded-full text-lg font-bold
+                                         hover:bg-indigo-700 transition-all duration-300
+                                         shadow-lg transform hover:scale-105 inline-block">
+                    View My Work
+                </a>
+            </div>
+        </section>
+
+        <div class="container py-12">
+            <section id="about" class="section">
+                <div class="section-blob"></div>
+                <div>
+                    <h2 class="text-3xl font-bold mb-8 text-center text-indigo-400">About Me</h2>
+                    <div class="flex flex-col md:flex-row items-center gap-12 text-left">
+                        <div class="md:w-1/3 flex justify-center">
+                            <img src="imag/rakhi3.jpg" alt="Amit Kumar Jha" 
+                                 class="rounded-lg shadow-xl border-4 border-indigo-400 w-64 h-64 object-cover">
+                        </div>
+                        <div class="md:w-2/3">
+                            <p id="about-p1" class="text-lg text-gray-300 leading-relaxed mb-4">&nbsp;</p>
+                            <p id="about-p2" class="text-lg text-gray-300 leading-relaxed">&nbsp;</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="projects" class="section relative">
+                <div class="section-blob"></div> 
+                
+                <div id="projects-content">
+                    <h2 class="text-3xl font-bold mb-8 text-center text-indigo-400">My Projects</h2>
+                    <div id="project-stack-container" class="opacity-0">
+                        <!-- Project Card 1 -->
+                        <div class="project-card">
+                            <div class="md:flex">
+                                <img src="imag/comming soon.jpg" alt="Project 1 Screenshot" class="w-full md:w-1/2 h-64 md:h-auto object-cover">
+                                <div class="p-6 md:p-8 flex flex-col">
+                                    <h3 class="text-2xl font-bold mb-2 text-white">Project Title One</h3>
+                                    <p class="text-gray-400 mb-4 flex-grow">COMMING SOON!!! </p>
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                    </div>
+                                    <div class="flex space-x-4 mt-auto">
+                                        <a href="#" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">Live Demo →</a>
+                                        <a href="#" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">GitHub Repo →</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="page-peel"></div>
+                        </div>
+
+                        <!-- Project Card 2 -->
+                        <div class="project-card">
+                             <div class="md:flex">
+                                <img src="imag/comming soon.jpg" alt="Project 2 Screenshot" class="w-full md:w-1/2 h-64 md:h-auto object-cover">
+                                <div class="p-6 md:p-8 flex flex-col">
+                                    <h3 class="text-2xl font-bold mb-2 text-white">Project Title Two</h3>
+                                    <p class="text-gray-400 mb-4 flex-grow">COMMING SOON!!! </p>
+                                    <div class="flex flex-wrap gap-2 mb-4">
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                        <span class="project-tag">RESOURCES</span>
+                                    </div>
+                                    <div class="flex space-x-4 mt-auto">
+                                        <a href="#" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">Live Demo →</a>
+                                        <a href="#" class="text-indigo-400 hover:text-indigo-300 font-semibold transition-colors">GitHub Repo →</a>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="page-peel"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- NEW: DOOR ANIMATION COVER -->
+                <div id="door-wrapper">
+                    <div class="door door-left"><div class="door-handle"></div></div>
+                    <div class="door door-right"><div class="door-handle"></div></div>
+                    <div id="door-text" class="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-in-out">
+                         <div class="text-center">
+                            <h3 class="text-4xl font-bold text-white mb-2">My Work Portfolio</h3>
+                            <p class="text-xl text-indigo-300">Click Doors to Open</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="skills" class="section">
+                <div class="section-blob"></div> 
+                <h2 class="text-3xl font-bold mb-8 text-center text-indigo-400">Technical Expertise</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 skills-grid">
+                    
+                    <div class="skill-category">
+                        <h3>Web Development</h3>
+                        <h4>Front-end</h4>
+                        <div class="space-y-4">
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/HTML.jpg" alt="HTML Icon" class="skill-icon"><div class="w-full"><span class="skill-name">HTML</span><div class="progress-bar-bg"><div class="progress-bar-inner html"></div></div></div></div>
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/CSS.jpg" alt="CSS Icon" class="skill-icon"><div class="w-full"><span class="skill-name">CSS</span><div class="progress-bar-bg"><div class="progress-bar-inner css"></div></div></div></div>
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/JS.png" alt="JavaScript Icon" class="skill-icon"><div class="w-full"><span class="skill-name">JavaScript</span><div class="progress-bar-bg"><div class="progress-bar-inner javascript"></div></div></div></div>
+                        </div>
+                        <h4>Frameworks & Libraries</h4>
+                        <div class="space-y-4">
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/react.jpeg" alt="React Icon" class="skill-icon"><div class="w-full"><span class="skill-name">React.js</span><div class="progress-bar-bg"><div class="progress-bar-inner react"></div></div></div></div>
+                             <div class="skill-bar flex items-center gap-4"><img src="imag/tailwind.png" alt="Tailwind CSS Icon" class="skill-icon"><div class="w-full"><span class="skill-name">Tailwind CSS</span><div class="progress-bar-bg"><div class="progress-bar-inner tailwind"></div></div></div></div>
+                        </div>
+                        <h4>Back-end</h4>
+                        <div class="space-y-4">
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/nodejs.png" alt="Node.js Icon" class="skill-icon"><div class="w-full"><span class="skill-name">Node.js</span><div class="progress-bar-bg"><div class="progress-bar-inner node"></div></div></div></div>
+                        </div>
+                    </div>
+
+                    <div class="skill-category">
+                        <h3>Programming Languages</h3>
+                        <div class="space-y-4">
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/PYTHON.png" alt="Python Icon" class="skill-icon"><div class="w-full"><span class="skill-name">Python</span><div class="progress-bar-bg"><div class="progress-bar-inner python"></div></div></div></div>
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/C++.png" alt="C++ Icon" class="skill-icon"><div class="w-full"><span class="skill-name">C++</span><div class="progress-bar-bg"><div class="progress-bar-inner cpp"></div></div></div></div>
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/C.png" alt="C Icon" class="skill-icon"><div class="w-full"><span class="skill-name">C</span><div class="progress-bar-bg"><div class="progress-bar-inner c"></div></div></div></div>
+                            <div class="skill-bar flex items-center gap-4"><img src="imag/JAVA.png" alt="Java Icon" class="skill-icon"><div class="w-full"><span class="skill-name">Java</span><div class="progress-bar-bg"><div class="progress-bar-inner java"></div></div></div></div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="contact" class="section text-center">
+                <div class="section-blob"></div> 
+                <h2 class="text-3xl font-bold mb-6 text-indigo-400">Let's Connect</h2>
+                <p class="text-xl italic text-gray-400 mb-8 max-w-2xl mx-auto">
+                    "Innovation distinguishes between a leader and a follower."
+                </p>
+                <div class="flex flex-wrap justify-center gap-8">
+                    <a href="mailto:14amitjha07@gmail.com" class="flex items-center space-x-3 contact-link text-lg font-medium">
+                        <svg class="w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 20 20"><path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z"></path><path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z"></path></svg>
+                        <span>14amitjha07@gmail.com</span>
+                    </a>
+                    <a href="https://www.linkedin.com/in/amit-kumar-jha-4aa90431b" target="_blank" class="flex items-center space-x-3 contact-link text-lg font-medium">
+                         <svg class="w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
+                        <span>LinkedIn</span>
+                    </a>
+                    <a href="https://github.com/AMITJHA-hub" target="_blank" class="flex items-center space-x-3 contact-link text-lg font-medium">
+                        <svg class="w-6 h-6 text-indigo-400" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" d="M12 2C6.477 2 2 6.463 2 11.972c0 4.417 2.865 8.163 6.848 9.475.499.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.604-3.369-1.341-3.369-1.341-.454-1.151-1.109-1.458-1.109-1.458-.908-.62.069-.607.069-.607 1.003.07 1.531 1.028 1.531 1.028.892 1.529 2.341 1.087 2.909.832.091-.645.35-1.087.636-1.338-2.22-.253-4.555-1.119-4.555-4.942 0-1.091.39-1.984 1.029-2.684-.103-.253-.446-1.27.098-2.659 0 0 .84-.27 2.75 1.022A9.57 9.57 0 0112 6.843c.85.004 1.7.117 2.497.331 1.909-1.292 2.747-1.022 2.747-1.022.546 1.39.203 2.406.1 2.659.64.7 1.029 1.593 1.029 2.684 0 3.831-2.339 4.68-4.567 4.935.359.307.678.915.678 1.846 0 1.338-.012 2.419-.012 2.747 0 .268.181.579.688.484C21.137 20.133 24 16.388 24 11.972 24 6.463 19.522 2 14 2h-2z" clip-rule="evenodd"></path></svg>
+                        <span>GitHub</span>
+                    </a>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="bg-gray-900/50 py-6 text-center mt-12 border-t border-gray-700">
+        <div class="container">
+            <p class="text-gray-400">&copy; 2025 Amit Kumar Jha. All rights reserved.</p>
+            <p class="text-gray-500 text-sm mt-2">Crafted with ❤️ in Chennai, Tamil Nadu, India.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // --- Typewriter effect ---
+            const typedTextSpan = document.querySelector(".typewriter-text");
+            const textArray = ["Full-Stack Developer", "Creative Problem Solver", "Web Architect", "Freelancer"]; 
+            const typingDelay = 100;
+            const erasingDelay = 75;
+            const newTextDelay = 1500;
+            let textArrayIndex = 0;
+            let charIndex = 0;
+
+            function type() {
+                if (!typedTextSpan) return;
+                if (charIndex < textArray[textArrayIndex].length) {
+                    typedTextSpan.textContent += textArray[textArrayIndex].charAt(charIndex);
+                    charIndex++;
+                    setTimeout(type, typingDelay);
+                } else {
+                    setTimeout(erase, newTextDelay);
+                }
+            }
+
+            function erase() {
+                if (!typedTextSpan) return;
+                if (charIndex > 0) {
+                    typedTextSpan.textContent = textArray[textArrayIndex].substring(0, charIndex - 1);
+                    charIndex--;
+                    setTimeout(erase, erasingDelay);
+                } else {
+                    textArrayIndex++;
+                    if (textArrayIndex >= textArray.length) textArrayIndex = 0;
+                    setTimeout(type, typingDelay + 500);
+                }
+            }
+            if (typedTextSpan) {
+               setTimeout(type, newTextDelay);
+            }
+
+            // --- Door Animation Script ---
+            const doorWrapper = document.getElementById('door-wrapper');
+            const doorText = document.getElementById('door-text');
+            const projectStackContainer = document.getElementById('project-stack-container');
+            
+            if (doorWrapper) {
+                doorWrapper.addEventListener('click', () => {
+                    doorWrapper.classList.add('is-opening');
+                    if(doorText) {
+                        doorText.classList.add('opacity-0');
+                    }
+                    if (projectStackContainer) {
+                        setTimeout(() => {
+                           projectStackContainer.classList.remove('opacity-0');
+                        }, 500); 
+                    }
+                     setTimeout(() => {
+                        doorWrapper.style.display = 'none';
+                    }, 1300);
+                });
+            }
+
+            // --- Project Page Peel Navigation Script ---
+            const projectStack = document.querySelector('#project-stack-container');
+            if (projectStack) {
+                const projectCards = Array.from(projectStack.querySelectorAll('.project-card'));
+                let currentProjectIndex = 0;
+
+                function showProject(index) {
+                    projectCards.forEach((card, i) => {
+                        card.classList.remove('is-active');
+                        if (i === index) {
+                            card.classList.add('is-active');
+                        }
+                    });
+                    const activeCard = projectCards[index];
+                    if (activeCard) {
+                        setTimeout(() => {
+                             projectStack.style.height = `${activeCard.offsetHeight}px`;
+                        }, 50);
+                    }
+                }
+
+                projectCards.forEach((card, index) => {
+                    const peel = card.querySelector('.page-peel');
+                    if (peel) {
+                        peel.addEventListener('click', () => {
+                            currentProjectIndex = (index + 1) % projectCards.length;
+                            showProject(currentProjectIndex);
+                        });
+                    }
+                });
+
+                if(projectCards.length > 0) {
+                    showProject(0);
+                }
+            }
+
+            // --- Skills Bar Animation Trigger ---
+            const skillsSection = document.getElementById('skills');
+            if (skillsSection) {
+                const skillsObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting) {
+                            skillsSection.classList.add('is-visible');
+                            skillsObserver.unobserve(skillsSection);
+                        }
+                    });
+                }, { threshold: 0.2 });
+                skillsObserver.observe(skillsSection);
+            }
+            
+            // --- "About Me" Writing Animation ---
+            const aboutSection = document.getElementById('about');
+            const aboutP1 = document.getElementById('about-p1');
+            const aboutP2 = document.getElementById('about-p2');
+            let aboutTypingHasStarted = false;
+
+            const originalText1 = "Hello! I'm Amit, a dedicated **Full-Stack Developer** specializing in crafting efficient and user-centric web applications. My journey in technology is driven by a passion for problem-solving and a commitment to continuous learning.";
+            const originalText2 = "I thrive in collaborative environments and enjoy transforming complex challenges into elegant, scalable solutions. I am currently seeking freelance opportunities where I can apply my skills in modern web technologies to build impactful products for clients.";
+
+            function typeWriter(element, text, callback) {
+                let i = 0;
+                const formattedText = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>');
+                element.innerHTML = '';
+                element.classList.add('writing-cursor');
+                
+                function type() {
+                    if (i < formattedText.length) {
+                        element.innerHTML = formattedText.substring(0, i + 1);
+                        i++;
+                        setTimeout(type, 0); // Typing speed
+                    } else {
+                        element.classList.remove('writing-cursor');
+                        if (callback) callback();
+                    }
+                }
+                type();
+            }
+
+            if (aboutSection) {
+                const aboutObserver = new IntersectionObserver((entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && !aboutTypingHasStarted) {
+                            aboutTypingHasStarted = true;
+                            typeWriter(aboutP1, originalText1, () => {
+                                typeWriter(aboutP2, originalText2);
+                            });
+                            aboutObserver.unobserve(aboutSection);
+                        }
+                    });
+                }, { threshold: 0.6 }); // Trigger when 60% of the section is visible
+                aboutObserver.observe(aboutSection);
+            }
+        });
+
+        // --- Digital Flow Background Animation Script (Hero) ---
+        const digitalFlowBg = document.getElementById('digital-flow-background');
+        if (digitalFlowBg) {
+            const numLines = 50;
+            function createCodeLine() {
+                const line = document.createElement('div');
+                line.classList.add('code-line');
+                const left = Math.random() * 100 + 'vw';
+                const duration = Math.random() * (20 - 8) + 8;
+                const height = Math.random() * 100 + 30;
+                const delay = Math.random() * (20 * 0.8);
+                line.style.left = left;
+                line.style.setProperty('--line-height', `${height}px`);
+                line.style.setProperty('--duration', `${duration}s`);
+                line.style.animationDelay = `-${delay}s`;
+                digitalFlowBg.appendChild(line);
+                line.addEventListener('animationend', () => { line.remove(); createCodeLine(); });
+            }
+            for (let i = 0; i < numLines; i++) { createCodeLine(); }
+        }
+
+        // --- Global Starfield / Digital Dust Animation Script ---
+        const starfieldBg = document.getElementById('starfield-background');
+        if (starfieldBg) {
+            const numStars = 100;
+             function createStar() {
+                const star = document.createElement('div');
+                star.classList.add('star');
+                const size = Math.random() * (3 - 1) + 1;
+                const top = Math.random() * 100 + 'vh';
+                const left = Math.random() * 100 + 'vw';
+                const twinkleDuration = Math.random() * (8 - 3) + 3;
+                const driftDuration = Math.random() * (90 - 30) + 30;
+                const delay = Math.random() * 90;
+                const xStart = (Math.random() * 40) - 20;
+                const yStart = (Math.random() * 40) - 20;
+                const xEnd = (Math.random() * 40) - 20;
+                const yEnd = (Math.random() * 40) - 20;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.top = top;
+                star.style.left = left;
+                star.style.setProperty('--duration', `${twinkleDuration}s`);
+                star.style.setProperty('--drift-duration', `${driftDuration}s`);
+                star.style.setProperty('--x-start', `${xStart}px`);
+                star.style.setProperty('--y-start', `${yStart}px`);
+                star.style.setProperty('--x-end', `${xEnd}px`);
+                star.style.setProperty('--y-end', `${yEnd}px`);
+                star.style.animationDelay = `-${delay}s`;
+                starfieldBg.appendChild(star);
+            }
+            for (let i = 0; i < numStars; i++) { createStar(); }
+        }
+    </script>
+</body>
+</html>
+
